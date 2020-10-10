@@ -1,0 +1,12 @@
+[submodule "app"]
+	path = app
+	url = git@github.com:kubicek/wf_test.git
+	branch = app
+[submodule "data/source"]
+	path = data/source
+	url = git@github.com:kubicek/wf_test.git
+	branch = source
+[submodule "data/export"]
+	path = data/export
+	url = git@github.com:kubicek/wf_test.git
+	branch = export
