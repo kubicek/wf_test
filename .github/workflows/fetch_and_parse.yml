@@ -1,0 +1,53 @@
+name: fetch-and-parse
+on: [push, workflow_dispatch]
+# git remote set-url origin https://scuzzlebuzzle:<MYTOKEN>@github.com/scuzzlebuzzle/ol3-1.git
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - run: sudo apt-get update
+      - name: Install git
+        run: sudo apt-get install -y git
+      - run: git --version
+      - run: git config --global user.email "jiri.kubicek@kraxnet.cz"
+      - run: git config --global user.name "Jiri Kubicek"
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+          ref: master
+      - run: ./app/fetcher ${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}
+      # - run: git add .
+      #   working-directory: ./data/source
+      - run: git commit -am "Fetched new source data"
+        working-directory: ./data/source
+      # - run: git branch
+      #   working-directory: ./data/source
+      # - run: git branch -r
+      #   working-directory: ./data/source
+      # - run: pwd
+      #   working-directory: ./data/source
+      # - run: git status
+      #   working-directory: ./data/source
+      # - run: ls -la .git
+      #   working-directory: ./data/source
+      - run: git push origin HEAD:source
+        working-directory: ./data/source
+      - run: ./app/parser ${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}
+      # - run: git add .
+      #   working-directory: ./data/export
+      - run: git commit -am "Generated new data export"
+        working-directory: ./data/export
+      - run: git push origin HEAD:export
+        working-directory: ./data/export
+
+      # - name: Commit export changes
+      #   uses: EndBug/add-and-commit@v5
+      #   with:
+      #     branch: export
+      #     cwd: './data/export'
+      #   env:
+      #     GITHUB_TOKEN:
+      # - name: Commit changes
+      - run: git commit -am "Batch run"
+      - run: git push origin master
