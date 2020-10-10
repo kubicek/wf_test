@@ -1,0 +1,2 @@
+pwd
+echo "source $1" > ./data/source/file.csv

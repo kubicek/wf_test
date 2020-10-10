@@ -1,0 +1,2 @@
+pwd
+echo "export $1" > ./data/export/file.json
